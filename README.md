@@ -48,10 +48,12 @@ Agent được điều khiển bằng prompt cố định với **3 bước bắ
 - `df.info()`
 - `df.describe()`
 
+
 ### 2️⃣ Xử lý & tính toán
 - `groupby`
 - lọc dữ liệu
 - tính tổng, tỷ lệ, thống kê
+
 
 ### 3️⃣ Trực quan hóa
 - Tự động chọn biểu đồ:
@@ -65,6 +67,7 @@ Agent được điều khiển bằng prompt cố định với **3 bước bắ
 ⚠️ Chatbot **không được trả lời nếu chưa chạy code**.
 
 ---
+
 
 ## 🛠️ Công Nghệ Sử Dụng
 - Python
