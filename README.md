@@ -1,27 +1,23 @@
-# DA for everyone
-
-<a target="_blank" href="https://cookiecutter-data-science.drivendata.org/">
-    <img src="https://img.shields.io/badge/CCDS-Project%20template-328F97?logo=cookiecutter" />
-</a>
-
-A short description of the project.
-
 # 🤖 Chat With Your Data – Data Analysis Chatbot
 
-Đây là một **ứng dụng chatbot phân tích dữ liệu** được xây dựng bằng **Streamlit + LangChain Agent**.  
-Người dùng có thể **tải file CSV**, đặt câu hỏi bằng **ngôn ngữ tự nhiên**, và chatbot sẽ:
+<a target="_blank" href="https://cookiecutter-data-science.drivendata.org/">
+  <img src="https://img.shields.io/badge/CCDS-Project%20template-328F97?logo=cookiecutter" />
+</a>
 
-- Tự động **phân tích dữ liệu**
-- **Chạy code Python** trực tiếp trên DataFrame
-- **Vẽ biểu đồ phù hợp**
-- Trả lời **dựa trên kết quả thực thi code**, không trả lời suông
+Đây là một **ứng dụng chatbot phân tích dữ liệu** được xây dựng bằng **Streamlit + LangChain Agent**.  
+Người dùng có thể **tải file CSV**, đặt câu hỏi bằng **ngôn ngữ tự nhiên**, và chatbot sẽ tự động:
+
+- Phân tích dữ liệu
+- Sinh và thực thi **code Python trên DataFrame**
+- Vẽ **biểu đồ phù hợp**
+- Trả lời **dựa trên kết quả thực thi code** (data-driven)
 
 ---
 
 ## 🎯 Mục tiêu Project
 - Xây dựng chatbot có khả năng **phân tích dữ liệu tự động**
 - Áp dụng tư duy **LLM Agent cho Data Analysis**
-- Mọi câu trả lời đều **data-driven**
+- Mọi câu trả lời đều dựa trên **kết quả code**
 - Phù hợp làm **đồ án / project CV cho Data – AI – LLM**
 
 ---
@@ -35,7 +31,7 @@ Người dùng có thể **tải file CSV**, đặt câu hỏi bằng **ngôn ng
    - Phân tích yêu cầu
    - Sinh code Python để xử lý dữ liệu
    - Thực thi code thông qua `python_repl_ast`
-   - Tự động vẽ biểu đồ nếu cần
+   - Tự động vẽ biểu đồ phù hợp
 5. Chatbot trả về:
    - Nhận xét bằng tiếng Việt
    - Biểu đồ
@@ -134,25 +130,6 @@ Bảng dữ liệu
 Biểu đồ
 
 Lưu lịch sử chat trong session
-
-🚀 Giá Trị Khi Ghi CV
-Ứng dụng LLM Agent vào Data Analysis
-
-Hiểu rõ:
-
-Cách LLM sinh code
-
-Tool calling
-
-Data-driven reasoning
-
-Có thể mở rộng:
-
-RAG
-
-Multi-agent
-
-Dashboard nâng cao
 
 👤 Author
 Hoàng Khang
