@@ -3,61 +3,61 @@
 **Chat With Your Data** là một ứng dụng **chatbot phân tích dữ liệu** được xây dựng bằng **Streamlit + LangChain Agent**.  
 Người dùng có thể:
 
-- Upload file **CSV**
-- Đặt câu hỏi bằng **ngôn ngữ tự nhiên**
-- Chatbot sẽ tự động:
-  - Phân tích dữ liệu
-  - Sinh và thực thi **code Python trên DataFrame**
-  - Vẽ **biểu đồ phù hợp**
-  - Trả lời dựa trên **kết quả thực thi code** (data-driven)
+- Upload file **CSV**  
+- Đặt câu hỏi bằng **ngôn ngữ tự nhiên**  
+- Chatbot sẽ tự động:  
+  - Phân tích dữ liệu  
+  - Sinh và thực thi **code Python trên DataFrame**  
+  - Vẽ **biểu đồ phù hợp**  
+  - Trả lời dựa trên **kết quả thực thi code**
 
 ---
 
-##  Mục tiêu Project
-- Xây dựng chatbot **phân tích dữ liệu tự động**
-- Áp dụng **LLM Agent** cho Data Analysis
+## Mục tiêu Project
+
+- Xây dựng chatbot **phân tích dữ liệu tự động**  
+- Áp dụng **LLM Agent** cho Data Analysis, Data Science  
 - Mọi câu trả lời dựa trên **kết quả code** và **nội dung dataset**
 
 ---
 
-##  Cách Chatbot Hoạt Động
+## Cách Chatbot Hoạt Động
 
-1. Người dùng upload file **CSV**.
-2. Dữ liệu được load vào `DataFrame df`.
-3. Người dùng nhập câu hỏi bằng **ngôn ngữ tự nhiên**.
-4. LLM Agent:
-   - Phân tích yêu cầu
-   - Sinh code Python để xử lý dữ liệu
-   - Thực thi code bằng `python_repl_ast`
-   - Vẽ **biểu đồ phù hợp**
-5. Chatbot trả về:
-   - Nhận xét
-   - Biểu đồ
-   - Code đã chạy
+1. Người dùng upload file **CSV**.  
+   Ngoài ra có thể upload thêm nội dung dataset thông qua các file **DOCX**, **TXT**, **PDF**.  
+2. Dữ liệu được load vào `DataFrame df`.  
+3. Người dùng nhập câu hỏi bằng **ngôn ngữ tự nhiên**.  
+4. **LLM Agent** thực hiện:  
+   - Phân tích yêu cầu  
+   - Sinh code Python để xử lý dữ liệu  
+   - Thực thi code bằng `python_repl_ast`  
+   - Vẽ **biểu đồ phù hợp**  
+5. Chatbot trả về:  
+   - Nhận xét  
+   - Biểu đồ  
+   - Code đã chạy  
    - Kết quả dữ liệu (`DataFrame` / `Series`)
 
-> ⚠️ Chatbot **không được trả lời nếu chưa chạy code**.
-
-Ngoài ra người dùng có thể upload thêm nội dung của dataset thông qua các file docx, txt, pdf
 ---
 
-##  Quy Trình Phân Tích (Agent Logic)
+## Cấu trúc dự án
 
-### 1️. Khám phá dữ liệu
-- `df.info()`
-- `df.describe()`
-
-### 2️. Xử lý & tính toán
-- `groupby`
-- Lọc dữ liệu
-- Tính tổng, tỷ lệ, thống kê
-
-### 3️. Trực quan hóa
-- Tự động chọn biểu đồ: `Bar`, `Line`, `Pie`, `Boxplot`
-- Luôn vẽ **ít nhất 1 biểu đồ**
-- Biểu đồ hiển thị trực tiếp trên Streamlit
-
----
+```text
+├── src
+│   ├── agents
+│   │   ├── action.py          # Chức năng classify_intent, planner, executor
+│   │   ├── load_data.py       # Hàm load dữ liệu văn bản
+│   │   └── summary.py         # Hàm tóm tắt nội dung văn bản
+│   ├── models
+│   │   └── llm.py             # Hàm load_llm để load LLM
+│   ├── ui
+│   │   └── chat_history.py    # Hiển thị lịch sử trò chuyện
+│   └── utils
+│       └── data_visualize.py  # Hàm print_chart (visualize dữ liệu)
+├── prompt
+│   └── prompting.py           # prompt_executor, prompt_planner
+├── app.py                     # File chính chạy Streamlit
+└── README.md
 
 ##  Công Nghệ Sử Dụng
 - Python
@@ -66,44 +66,31 @@ Ngoài ra người dùng có thể upload thêm nội dung của dataset thông 
 - Matplotlib
 - Seaborn
 - LangChain (Pandas DataFrame Agent)
-
+- ...
 ---
 
 ##  Cách Chạy Project
 
-### 1️. Clone repository
-git clone https://github.com/HoangKhang226/DA-For-Everyone.git
-cd DA-For-Everyone
-### 2️. Cài thư viện
-bash
-Sao chép mã
-pip install -r requirements.txt
-### 3️. Thiết lập biến môi trường
-Tạo file .env:
+1️. Clone repository
+  git clone https://github.com/HoangKhang226/DA-For-Everyone.git
+  cd Chat-With-Data
+2️. Cài thư viện
+  pip install -r requirements.txt
+3️. Thiết lập biến môi trường
+  Tạo file .env:  
+  GOOGLE_API_KEY=your_api_key_here
+4️. Chạy ứng dụng
+  streamlit run Chat_With_Your_Data.py
 
-ini
-Sao chép mã
-GOOGLE_API_KEY=your_api_key_here
-### 4️. Chạy ứng dụng
-bash
-Sao chép mã
-streamlit run Chat_With_Your_Data.py
-💡 Tính Năng Nổi Bật
-Chat với dữ liệu CSV
-
-Tự sinh & thực thi code Pandas
-
+## Tính Năng Nổi Bật
+  - Chat với dữ liệu CSV
+  - Tự sinh & thực thi code Pandas
 Hiển thị:
-
-Câu trả lời
-
-Code đã chạy
-
-Bảng dữ liệu
-
-Biểu đồ
-
-Lưu lịch sử chat trong session
+  - Câu trả lời
+  - Code đã chạy
+  - Bảng dữ liệu
+  - Biểu đồ
+  - Lưu lịch sử chat trong session và có thể xem lại
 
 👤 Author
 Hoàng Khang – Data Science Student
