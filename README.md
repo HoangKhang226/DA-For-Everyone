@@ -70,14 +70,14 @@ Người dùng có thể:
 
 ##  Cách Chạy Project
 
-1️. Clone repository    
+1. Clone repository    
    git clone https://github.com/HoangKhang226/DA-For-Everyone.git    
    cd Chat-With-Data    
-2️. Cài thư viện  
+2. Cài thư viện  
    pip install -r requirements.txt    
-3️. Thiết lập biến môi trường    
+3. Thiết lập biến môi trường    
    Tạo file .env: GOOGLE_API_KEY=your_api_key_here    
-4️. Chạy ứng dụng    
+4. Chạy ứng dụng    
    streamlit run Chat_With_Your_Data.py    
 
 ## Tính Năng Nổi Bật  
