@@ -1,26 +1,31 @@
 import pandas as pd
 from src.utils.data_visualize import print_chart
 from src.prompt.prompting import prompt_executor, prompt_planner
+from src.types.state_types import chatState
 
 
-def classify_intent(llm, query: str) -> str:
+def classify_intent(state: chatState) -> str:
     """
     Phân loại câu hỏi người dùng
     Trả về: "PLANNER" hoặc "EXECUTOR"
     """
     try:
         prompt = f"""
-Bạn là hệ thống phân loại câu hỏi trong chatbot phân tích dữ liệu.
-Chỉ trả về 1 từ duy nhất: PLANNER hoặc EXECUTOR
-Câu hỏi: "{query}"
-"""
-        return llm.invoke(prompt).content.strip().upper()
+        Bạn là hệ thống phân loại câu hỏi trong chatbot phân tích dữ liệu.
+        Chỉ trả về 1 từ duy nhất: PLANNER hoặc EXECUTOR
+        Câu hỏi: "{state['query']}"
+        """
+        intent = state["llm"].invoke(prompt).content.strip().upper()
+        if intent not in ["PLANNER", "EXECUTOR"]:
+            intent = "EXECUTOR"  # fallback
+        state["intent"] = intent
     except Exception as e:
         print(f"Error classify_intent: {e}")
-        return "EXECUTOR"
+        state["intent"] = "EXECUTOR"
+    return state
 
 
-def executor(agent, df, query):
+def executor(state: chatState):
     """
     Thực hiện phân tích dữ liệu với agent đã có sẵn.
     - Tự check null / missing
@@ -31,6 +36,10 @@ def executor(agent, df, query):
     """
     try:
         # Giới hạn dữ liệu lớn: sample 1000 row max, giữ column quan trọng
+        df = state["df"]
+        query = state["query"]
+        agent = state["agent"]
+
         df_sample = (
             df.sample(n=min(1000, len(df)), random_state=42)
             if len(df) > 1000
@@ -38,14 +47,13 @@ def executor(agent, df, query):
         )
         prompt = prompt_executor(query)
         response = agent.invoke(prompt)
+
     except Exception as e:
-        return {
-            "output_text": f"Error khi gọi executor: {e}",
-            "data_table": None,
-            "executed_code": "",
-            "has_plot": False,
-            "fig": None,
-        }
+        state["response"] = f"Error khi gọi executor: {e}"
+        state["data_table"] = None
+        state["executed_code"] = ""
+        state["fig"] = None
+        return state
 
     output_text = response.get("output", "")
     steps = response.get("intermediate_steps", [])
@@ -67,23 +75,24 @@ def executor(agent, df, query):
 
         # Kiểm tra plot
         if "plt." in executed_code:
-            has_plot = True
             try:
                 fig = print_chart(executed_code, df)
+                state["fig"] = fig
             except Exception as e:
                 print(f"Error khi vẽ chart: {e}")
                 fig = None
+                state["fig"] = fig
 
-    return {
-        "output_text": output_text,
-        "data_table": data_result,
-        "executed_code": executed_code,
-        "has_plot": has_plot,
-        "fig": fig,
-    }
+    state["response"] = output_text
+    state["data_table"] = data_result
+    state["executed_code"] = executed_code
+    state["is_plot"] = has_plot
+    state["fig"] = fig
+
+    return state
 
 
-def planner(llm, df, query, context=None):
+def planner(state: chatState):
     """
     Trả về gợi ý chiến lược phân tích dữ liệu
     - df: DataFrame của dataset
@@ -91,15 +100,20 @@ def planner(llm, df, query, context=None):
     - context: nội dung dataset chi tiết (từ file docx, pdf, txt) - không bắt buộc
     """
     try:
+        df = state["df"]
+        query = state["query"]
+        llm = state["llm"]
+        context = state.get("dataset_context", None)
+
         #  Lấy sample dataset nhỏ để AI nắm schema
         df_sample = df.sample(3, random_state=42)
         dataset_summary = f"""
-DATASET SUMMARY (schema + sample):
-- Các cột: {list(df.columns)}
-- Kiểu dữ liệu: {df.dtypes.to_dict()}
-- 5 dòng sample:
-{df_sample.to_dict(orient='records')}
-"""
+                            DATASET SUMMARY (schema + sample):
+                            - Các cột: {list(df.columns)}
+                            - Kiểu dữ liệu: {df.dtypes.to_dict()}
+                            - 5 dòng sample:
+                            {df_sample.to_dict(orient='records')}
+                            """
 
         #  Chuẩn bị prompt
         full_prompt = "Bạn là chuyên gia phân tích dữ liệu.\n"
@@ -114,8 +128,10 @@ DATASET SUMMARY (schema + sample):
         #  Gọi LLM
         response = llm.invoke(full_prompt)
 
-        return response.content
+        state["response"] = response.content
 
     except Exception as e:
         print(f"Error planner: {e}")
-        return "Không thể tạo gợi ý chiến lược."
+        state["response"] = "Không thể tạo gợi ý chiến lược."
+
+    return state

@@ -18,7 +18,7 @@ def display_chat_history(history):
                         st.dataframe(res)
                     else:
                         st.text(res)
-                if chat.get("is_plot") and chat.get("fig"):
+                if chat.get("fig") is not None:
                     st.pyplot(chat["fig"])
                 if chat.get("code"):
                     st.code(chat["code"], language="python")
